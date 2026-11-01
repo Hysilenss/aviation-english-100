@@ -1,0 +1,52 @@
+{
+  "id": "./",
+  "name": "航空英语 100",
+  "short_name": "航空100",
+  "description": "航空英语 L1 100 词主题学习、词卡、测验和错词复习",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "background_color": "#EEF4FA",
+  "theme_color": "#17365D",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "开始学习",
+      "short_name": "学习",
+      "url": "./#study"
+    },
+    {
+      "name": "词汇测验",
+      "short_name": "测验",
+      "url": "./#quiz"
+    },
+    {
+      "name": "错词本",
+      "short_name": "错词",
+      "url": "./#mistakes"
+    }
+  ]
+}

@@ -1,0 +1,905 @@
+{
+  "version": 1,
+  "groups": [
+    {
+      "id": "g01",
+      "number": 1,
+      "title": "飞行阶段、姿态与自动飞行",
+      "mainline": "按“阶段 → 姿态 → 自动飞行与超控 → 限制与抑制”理解飞行过程。",
+      "pitfall": "approach 是进近，cruise 是巡航，descent 是下降；pitch 是俯仰，roll 是横滚；Mach trim 是马赫配平。",
+      "selfcheck": "说出起飞、巡航、下降、进近的英文，并区分 pitch 与 roll。",
+      "terms": [
+        {
+          "id": 45,
+          "q": 45,
+          "en": "approach",
+          "zh": "进近",
+          "system": "飞行阶段",
+          "scene": "准备着陆前的最后飞行阶段；不是“方法”。"
+        },
+        {
+          "id": 11,
+          "q": 11,
+          "en": "cruise",
+          "zh": "巡航",
+          "system": "飞行阶段",
+          "scene": "飞机在预定高度稳定飞行。"
+        },
+        {
+          "id": 98,
+          "q": 98,
+          "en": "descent",
+          "zh": "下降",
+          "system": "飞行阶段",
+          "scene": "飞机从巡航高度向下飞；与 climb 方向相反。"
+        },
+        {
+          "id": 64,
+          "q": 64,
+          "en": "pitch",
+          "zh": "俯仰",
+          "system": "飞行姿态",
+          "scene": "机头向上或向下；围绕横轴转动。"
+        },
+        {
+          "id": 96,
+          "q": 96,
+          "en": "roll",
+          "zh": "横滚",
+          "system": "飞行姿态",
+          "scene": "绕机身纵轴滚转；注意与 pitch、yaw 区分。"
+        },
+        {
+          "id": 2,
+          "q": 2,
+          "en": "Mach trim",
+          "zh": "马赫配平",
+          "system": "飞行控制 / 自动飞行",
+          "scene": "高速巡航时修正马赫数变化带来的俯仰趋势。"
+        },
+        {
+          "id": 24,
+          "q": 24,
+          "en": "TO/GA - takeoff/go-around",
+          "zh": "起飞 / 复飞",
+          "system": "自动飞行 / 推力模式",
+          "scene": "Takeoff / Go-Around 的缩写，起飞或复飞时使用。"
+        },
+        {
+          "id": 4,
+          "q": 4,
+          "en": "manual override",
+          "zh": "人工超控",
+          "system": "操纵 / 控制系统",
+          "scene": "自动系统需要时由人接管控制。"
+        },
+        {
+          "id": 3,
+          "q": 3,
+          "en": "inhibit",
+          "zh": "抑制",
+          "system": "控制 / 逻辑",
+          "scene": "暂时屏蔽或禁止某项功能、告警。"
+        },
+        {
+          "id": 57,
+          "q": 57,
+          "en": "exceedances",
+          "zh": "超限",
+          "system": "监控 / 记录",
+          "scene": "参数超过规定限制，常出现在发动机或飞行数据中。"
+        }
+      ]
+    },
+    {
+      "id": "g02",
+      "number": 2,
+      "title": "飞机结构、操纵面与起落架",
+      "mainline": "按“机身与机翼结构 → 操纵面 → 起落架 → 轮胎损伤”建立飞机外形图。",
+      "pitfall": "slat 是缝翼，不是襟翼；rudder 是方向舵；skin 是蒙皮；punctured 常指轮胎被扎伤。",
+      "selfcheck": "看图说出 fuselage、skin、spar、slat、rudder、shock strut。",
+      "terms": [
+        {
+          "id": 9,
+          "q": 9,
+          "en": "slat",
+          "zh": "缝翼",
+          "system": "机翼前缘 / 增升装置",
+          "scene": "前缘缝翼伸出以增加升力，改善低速性能。"
+        },
+        {
+          "id": 73,
+          "q": 73,
+          "en": "rudder",
+          "zh": "方向舵",
+          "system": "尾翼 / 飞行操纵",
+          "scene": "控制飞机偏航，通常由脚蹬操纵。"
+        },
+        {
+          "id": 15,
+          "q": 15,
+          "en": "fuselage",
+          "zh": "机身",
+          "system": "飞机结构",
+          "scene": "承载客舱、货舱和设备的主要机身结构。"
+        },
+        {
+          "id": 78,
+          "q": 78,
+          "en": "skin",
+          "zh": "蒙皮",
+          "system": "飞机结构",
+          "scene": "覆盖机身和机翼，形成气动外形并参与承力。"
+        },
+        {
+          "id": 100,
+          "q": 100,
+          "en": "spar",
+          "zh": "翼梁",
+          "system": "机翼结构",
+          "scene": "机翼内部的主要承力梁。"
+        },
+        {
+          "id": 88,
+          "q": 88,
+          "en": "windshield",
+          "zh": "风挡",
+          "system": "驾驶舱",
+          "scene": "飞行员前方的透明结构，应关注防冰、防雨和鸟击。"
+        },
+        {
+          "id": 79,
+          "q": 79,
+          "en": "shock strut",
+          "zh": "减震支柱",
+          "system": "起落架",
+          "scene": "吸收着陆和地面运动时的冲击。"
+        },
+        {
+          "id": 69,
+          "q": 69,
+          "en": "downlock pin",
+          "zh": "下位锁销",
+          "system": "起落架",
+          "scene": "确保起落架处于放下并锁定的位置。"
+        },
+        {
+          "id": 39,
+          "q": 39,
+          "en": "tire",
+          "zh": "轮胎",
+          "system": "起落架",
+          "scene": "美式拼写为 tire，英式拼写为 tyre。"
+        },
+        {
+          "id": 80,
+          "q": 80,
+          "en": "punctured",
+          "zh": "扎伤",
+          "system": "轮胎 / 结构损伤",
+          "scene": "被尖锐物刺穿，常与 tire 搭配。"
+        }
+      ]
+    },
+    {
+      "id": "g03",
+      "number": 3,
+      "title": "动力装置、发动机与燃油",
+      "mainline": "按“产生推力 → 控制与监控 → 燃油存储/加注/抛放 → 油箱防火”串联动力系统。",
+      "pitfall": "power plant 是动力装置，不是发电厂；EGT 是排气温度；refuel 是加油，jettison 是抛油。",
+      "selfcheck": "解释 FADEC、EGT、chip detector、IGS 在发动机和燃油系统中的作用。",
+      "terms": [
+        {
+          "id": 83,
+          "q": 83,
+          "en": "power plant",
+          "zh": "动力装置",
+          "system": "发动机 / 动力系统",
+          "scene": "产生推力的整套装置；不是发电厂。"
+        },
+        {
+          "id": 34,
+          "q": 34,
+          "en": "turbofan engine",
+          "zh": "涡扇发动机",
+          "system": "动力装置",
+          "scene": "风扇产生主要推力，核心机驱动风扇。"
+        },
+        {
+          "id": 13,
+          "q": 13,
+          "en": "FADEC / full authority digital engine control",
+          "zh": "全权限数字式发动机控制",
+          "system": "发动机控制",
+          "scene": "用数字系统全权限控制发动机燃油和推力。"
+        },
+        {
+          "id": 20,
+          "q": 20,
+          "en": "EGT",
+          "zh": "出口排气温度",
+          "system": "发动机监控",
+          "scene": "涡轮出口排气温度，是重要的发动机限制参数。"
+        },
+        {
+          "id": 18,
+          "q": 18,
+          "en": "chip detector",
+          "zh": "金属屑探测器 / 磁堵",
+          "system": "发动机滑油",
+          "scene": "探测滑油中的金属屑，提示部件磨损。"
+        },
+        {
+          "id": 93,
+          "q": 93,
+          "en": "fuel",
+          "zh": "燃油",
+          "system": "燃油系统",
+          "scene": "发动机使用的主要能源。"
+        },
+        {
+          "id": 81,
+          "q": 81,
+          "en": "refuel",
+          "zh": "加油",
+          "system": "燃油勤务",
+          "scene": "向飞机加注燃油。"
+        },
+        {
+          "id": 55,
+          "q": 55,
+          "en": "jettison",
+          "zh": "抛油",
+          "system": "燃油系统",
+          "scene": "需要时把燃油抛到机外；不是普通的“丢弃”。"
+        },
+        {
+          "id": 94,
+          "q": 94,
+          "en": "center tank",
+          "zh": "中央油箱",
+          "system": "燃油系统",
+          "scene": "位于机身中央的油箱。"
+        },
+        {
+          "id": 97,
+          "q": 97,
+          "en": "IGS / inert gas system",
+          "zh": "惰性气体系统",
+          "system": "油箱惰化 / 防火",
+          "scene": "向油箱提供惰性气体，降低可燃风险。"
+        }
+      ]
+    },
+    {
+      "id": "g04",
+      "number": 4,
+      "title": "液压、气源、阀件与热管理",
+      "mainline": "按“储液 → 压力调节 → 阀门控制 → 混合/换热 → 防冰保护”理解流体路径。",
+      "pitfall": "fuse 在这里是液压保险；check valve 是单向活门；heat exchanger 是换热器，不是加热器。",
+      "selfcheck": "区分 bypass valve、butterfly valve、check valve，并说明 PRSOV 的作用。",
+      "terms": [
+        {
+          "id": 51,
+          "q": 51,
+          "en": "reservoir",
+          "zh": "储油箱",
+          "system": "燃油 / 液压 / 液体系统",
+          "scene": "储存并供应工作液；不要只记成“水库”。"
+        },
+        {
+          "id": 85,
+          "q": 85,
+          "en": "PRSOV / pressure regulator and shutoff valve",
+          "zh": "压力调节和关断活门",
+          "system": "引气系统",
+          "scene": "调节引气压力，并能切断引气。"
+        },
+        {
+          "id": 72,
+          "q": 72,
+          "en": "bypass valve",
+          "zh": "旁通活门",
+          "system": "气路 / 油路 / 空调",
+          "scene": "让流体绕过主路径；bypass 就是“绕过”。"
+        },
+        {
+          "id": 61,
+          "q": 61,
+          "en": "butterfly valve",
+          "zh": "蝶形活门",
+          "system": "管路控制",
+          "scene": "圆盘像蝴蝶翅膀一样转动，用来开关或调节流量。"
+        },
+        {
+          "id": 25,
+          "q": 25,
+          "en": "check valve",
+          "zh": "单向活门",
+          "system": "液压 / 气动",
+          "scene": "只允许流体沿一个方向流动。"
+        },
+        {
+          "id": 62,
+          "q": 62,
+          "en": "mix manifold",
+          "zh": "混合总管",
+          "system": "空调 / 气体分配",
+          "scene": "汇集并混合气流或流体，再分配到下游。"
+        },
+        {
+          "id": 71,
+          "q": 71,
+          "en": "heat exchangers",
+          "zh": "热交换器",
+          "system": "热管理 / 空调 / 液压",
+          "scene": "两种流体隔开换热；不是单纯的“加热器”。"
+        },
+        {
+          "id": 70,
+          "q": 70,
+          "en": "dual loop",
+          "zh": "双环路",
+          "system": "系统架构",
+          "scene": "两个独立环路提高冗余；dual 表示“双”。"
+        },
+        {
+          "id": 58,
+          "q": 58,
+          "en": "WTAI - wing thermal anti-ice",
+          "zh": "机翼热防冰",
+          "system": "防冰系统",
+          "scene": "用热量防止机翼前缘结冰；thermal + anti-ice。"
+        },
+        {
+          "id": 43,
+          "q": 43,
+          "en": "fuse",
+          "zh": "液压保险",
+          "system": "液压系统",
+          "scene": "流量异常时切断液压，保护下游管路；不是电气保险丝。"
+        }
+      ]
+    },
+    {
+      "id": "g05",
+      "number": 5,
+      "title": "电气系统与基础电子",
+      "mainline": "按“配电 → 发电与励磁 → 接地 → 信号传感 → 静电防护”理解电气链路。",
+      "pitfall": "bus 是汇流条；GND 是接地；static inverter 把直流变交流；ESDS 怕静电。",
+      "selfcheck": "说明 relay、IDG、static inverter、thermocouple 分别做什么。",
+      "terms": [
+        {
+          "id": 65,
+          "q": 65,
+          "en": "bus",
+          "zh": "汇流条",
+          "system": "电气系统",
+          "scene": "分配电能的公共导体；不是公交车。"
+        },
+        {
+          "id": 12,
+          "q": 12,
+          "en": "relay",
+          "zh": "继电器",
+          "system": "电气系统",
+          "scene": "用小电流控制另一路较大电流电路。"
+        },
+        {
+          "id": 42,
+          "q": 42,
+          "en": "GND / GRD / GROUND",
+          "zh": "接地",
+          "system": "电气系统",
+          "scene": "电路中与地相连的参考点或回流路径。"
+        },
+        {
+          "id": 30,
+          "q": 30,
+          "en": "IDG / integrated drive generator",
+          "zh": "整体驱动发电机",
+          "system": "发动机附件 / 电气",
+          "scene": "由发动机附件齿轮箱驱动，向飞机供电。"
+        },
+        {
+          "id": 63,
+          "q": 63,
+          "en": "static inverter",
+          "zh": "静变流机",
+          "system": "电气系统",
+          "scene": "把直流电转换为交流电。"
+        },
+        {
+          "id": 46,
+          "q": 46,
+          "en": "excitation",
+          "zh": "激励",
+          "system": "电气 / 控制",
+          "scene": "为发电机提供励磁，或向系统输入激励信号。"
+        },
+        {
+          "id": 14,
+          "q": 14,
+          "en": "solenoid",
+          "zh": "电磁线圈",
+          "system": "电气 / 液压控制",
+          "scene": "通电产生磁场，驱动阀或执行机构；注意拼写。"
+        },
+        {
+          "id": 7,
+          "q": 7,
+          "en": "LVDT",
+          "zh": "线性可变差动传感器",
+          "system": "传感器",
+          "scene": "把直线位移转换为电信号，用于位置反馈。"
+        },
+        {
+          "id": 84,
+          "q": 84,
+          "en": "ESDS / electro static discharge sensitive device",
+          "zh": "静电敏感元件",
+          "system": "电子维护",
+          "scene": "容易被静电损坏的电子元件，操作时需防静电。"
+        },
+        {
+          "id": 54,
+          "q": 54,
+          "en": "thermocouple",
+          "zh": "热电偶",
+          "system": "温度测量",
+          "scene": "两种金属接点产生电压，用来测量温度；thermo + couple。"
+        }
+      ]
+    },
+    {
+      "id": "g06",
+      "number": 6,
+      "title": "驾驶舱显示、航电与通信",
+      "mainline": "按“界面 → 显示与告警 → 计算 → 通信 → 设备安装位置”理解航电系统。",
+      "pitfall": "PFD 是主飞行显示页面；EICAS 含发动机指示和机组告警；EE bay 是电子设备架/舱。",
+      "selfcheck": "展开 PFD、EICAS、EFB、LRU，并说明 Ethernet 和 antenna 的用途。",
+      "terms": [
+        {
+          "id": 1,
+          "q": 1,
+          "en": "Main Menu",
+          "zh": "主菜单",
+          "system": "航电 / 软件界面",
+          "scene": "进入系统功能的主界面；考试写作 MAIN MENU。"
+        },
+        {
+          "id": 10,
+          "q": 10,
+          "en": "PFD / primary flight display",
+          "zh": "主飞行显示页面",
+          "system": "驾驶舱显示",
+          "scene": "显示姿态、空速、高度等主飞行数据。"
+        },
+        {
+          "id": 19,
+          "q": 19,
+          "en": "FMC / flight management computer",
+          "zh": "飞行管理计算机",
+          "system": "航电系统",
+          "scene": "管理飞行计划、导航和性能计算。"
+        },
+        {
+          "id": 41,
+          "q": 41,
+          "en": "LRU / line replaceable unit",
+          "zh": "航线可更换件",
+          "system": "维修 / 航电",
+          "scene": "可在航线快速拆换的组件。"
+        },
+        {
+          "id": 44,
+          "q": 44,
+          "en": "avionics",
+          "zh": "航空电子",
+          "system": "航电系统",
+          "scene": "飞机电子设备的总称。"
+        },
+        {
+          "id": 89,
+          "q": 89,
+          "en": "antenna",
+          "zh": "天线",
+          "system": "通信 / 导航",
+          "scene": "发射或接收无线电信号。"
+        },
+        {
+          "id": 26,
+          "q": 26,
+          "en": "EICAS / engine indication and crew alerting system",
+          "zh": "发动机指示和机组警告系统",
+          "system": "驾驶舱显示 / 告警",
+          "scene": "显示发动机参数，并向机组发出警告。"
+        },
+        {
+          "id": 33,
+          "q": 33,
+          "en": "EFB / electronic flight bag",
+          "zh": "电子飞行包",
+          "system": "驾驶舱航电",
+          "scene": "用电子设备替代部分纸质资料和计算。"
+        },
+        {
+          "id": 17,
+          "q": 17,
+          "en": "Ethernet",
+          "zh": "以太网",
+          "system": "数据通信",
+          "scene": "航电设备之间的网络通信方式；商标首字母大写。"
+        },
+        {
+          "id": 56,
+          "q": 56,
+          "en": "EE bay",
+          "zh": "电子设备架",
+          "system": "航电设备区",
+          "scene": "电气/电子设备集中安装的区域。"
+        }
+      ]
+    },
+    {
+      "id": "g07",
+      "number": 7,
+      "title": "导航、大气数据与仪表记录",
+      "mainline": "按“感受大气 → 计算基准 → 导航与接口 → 传输 → 记录与显示”串起信息流。",
+      "pitfall": "pitot 是空速管；terminal 是终端，不是航站楼；interface 是接口；FDR 是飞行记录器。",
+      "selfcheck": "说明 pitot、air data probes、IRU、FDR 在数据链中的位置。",
+      "terms": [
+        {
+          "id": 16,
+          "q": 16,
+          "en": "pitot",
+          "zh": "皮托管 / 空速管",
+          "system": "大气数据",
+          "scene": "感受全压，用于计算空速；注意堵塞和加温。"
+        },
+        {
+          "id": 66,
+          "q": 66,
+          "en": "air data probes",
+          "zh": "大气数据探头",
+          "system": "大气数据系统",
+          "scene": "感受气压、温度等，为空速和高度计算提供输入。"
+        },
+        {
+          "id": 82,
+          "q": 82,
+          "en": "marker beacon",
+          "zh": "指点信标",
+          "system": "导航",
+          "scene": "进近时接收地面信标信号，提示飞机经过特定位置。"
+        },
+        {
+          "id": 31,
+          "q": 31,
+          "en": "IRU - inertial reference unit",
+          "zh": "惯导组件",
+          "system": "惯性导航",
+          "scene": "提供姿态、航向和加速度等惯性基准信息。"
+        },
+        {
+          "id": 28,
+          "q": 28,
+          "en": "terminal",
+          "zh": "终端",
+          "system": "计算机 / 系统接口",
+          "scene": "用户或设备接入系统的端点；不是航站楼。"
+        },
+        {
+          "id": 68,
+          "q": 68,
+          "en": "interface",
+          "zh": "计算机接口",
+          "system": "航电 / 计算机",
+          "scene": "两个系统交换数据或信号的连接点，不只是普通“界面”。"
+        },
+        {
+          "id": 36,
+          "q": 36,
+          "en": "fiber optic",
+          "zh": "光纤",
+          "system": "数据传输",
+          "scene": "用光信号传输数据；fiber 是纤维，optic 是光学。"
+        },
+        {
+          "id": 48,
+          "q": 48,
+          "en": "DMM / data memory module",
+          "zh": "数据记忆模块",
+          "system": "航电 / 记录",
+          "scene": "存储维护或飞行数据的模块。"
+        },
+        {
+          "id": 49,
+          "q": 49,
+          "en": "FDR",
+          "zh": "飞行记录器（黑匣子）",
+          "system": "记录系统",
+          "scene": "Flight Data Recorder，记录飞行参数。"
+        },
+        {
+          "id": 87,
+          "q": 87,
+          "en": "instrument",
+          "zh": "仪表",
+          "system": "驾驶舱 / 显示",
+          "scene": "显示飞行、发动机或系统参数的仪表。"
+        }
+      ]
+    },
+    {
+      "id": "g08",
+      "number": 8,
+      "title": "维护、测试、勤务与状态",
+      "mainline": "按“自检 → 故障读取 → 记录与放行 → 状态检查 → 勤务操作”理解维修闭环。",
+      "pitfall": "BITE 是机内自测试；airworthiness 是适航状态；redline 是限制线；access 是接近。",
+      "selfcheck": "解释 CMS、BITE、airworthiness、redline 在维修中的意义。",
+      "terms": [
+        {
+          "id": 77,
+          "q": 77,
+          "en": "central maintenance system",
+          "zh": "中央维护系统",
+          "system": "维护 / 航电",
+          "scene": "集中读取、存储和维护故障信息。"
+        },
+        {
+          "id": 76,
+          "q": 76,
+          "en": "BITE / built-in test equipment",
+          "zh": "机内自测试设备",
+          "system": "航电 / 维护",
+          "scene": "设备自己检测故障；built-in 表示“内置”。"
+        },
+        {
+          "id": 92,
+          "q": 92,
+          "en": "logbook",
+          "zh": "飞机记录本",
+          "system": "维修记录",
+          "scene": "记录飞机维护、故障和放行信息。"
+        },
+        {
+          "id": 35,
+          "q": 35,
+          "en": "airworthiness",
+          "zh": "适航",
+          "system": "法规 / 安全",
+          "scene": "飞机满足安全飞行要求的状态；air + worthiness。"
+        },
+        {
+          "id": 86,
+          "q": 86,
+          "en": "redline",
+          "zh": "红线",
+          "system": "仪表 / 限制",
+          "scene": "指示不能超过的限制值，不只是普通红色线条。"
+        },
+        {
+          "id": 60,
+          "q": 60,
+          "en": "vibration",
+          "zh": "振动",
+          "system": "状态监控",
+          "scene": "发动机或部件异常振动时通常需要检查。"
+        },
+        {
+          "id": 74,
+          "q": 74,
+          "en": "access",
+          "zh": "接近",
+          "system": "维修 / 结构",
+          "scene": "为了检查或维护而接近部件；不是“访问权限”。"
+        },
+        {
+          "id": 53,
+          "q": 53,
+          "en": "servicing",
+          "zh": "勤务",
+          "system": "地面维护",
+          "scene": "加油、加水、充气、检查等地面服务。"
+        },
+        {
+          "id": 21,
+          "q": 21,
+          "en": "tighten",
+          "zh": "拧紧",
+          "system": "维修操作",
+          "scene": "按规定力矩拧紧；与 loose 的含义相反。"
+        },
+        {
+          "id": 50,
+          "q": 50,
+          "en": "rinse",
+          "zh": "冲洗",
+          "system": "清洁 / 维护",
+          "scene": "用水或清洁液冲掉残留物。"
+        }
+      ]
+    },
+    {
+      "id": "g09",
+      "number": 9,
+      "title": "客舱、供水与应急",
+      "mainline": "按“旅客服务 → 行李与货运 → 供水 → 应急设备与撤离”还原客舱场景。",
+      "pitfall": "gray water 是灰水，potable water 是饮用水；cargo 更常指货物，货舱常说 cargo compartment。",
+      "selfcheck": "说出头顶行李架、饮用水、应急出口、逃生滑梯、氧气面罩的英文。",
+      "terms": [
+        {
+          "id": 47,
+          "q": 47,
+          "en": "passenger service unit",
+          "zh": "旅客服务组件",
+          "system": "客舱",
+          "scene": "提供阅读灯、通风、呼叫等旅客服务。"
+        },
+        {
+          "id": 75,
+          "q": 75,
+          "en": "overhead stowage bin",
+          "zh": "头顶行李架",
+          "system": "客舱",
+          "scene": "位于旅客头顶的行李存放空间。"
+        },
+        {
+          "id": 95,
+          "q": 95,
+          "en": "cargo",
+          "zh": "货舱 / 货物",
+          "system": "货运 / 客舱",
+          "scene": "考试中问“货舱”；更精确的货舱常说 cargo compartment。"
+        },
+        {
+          "id": 59,
+          "q": 59,
+          "en": "gray water",
+          "zh": "灰水",
+          "system": "水 / 污水系统",
+          "scene": "来自洗手池等的生活废水，不是黑水。"
+        },
+        {
+          "id": 29,
+          "q": 29,
+          "en": "potable water",
+          "zh": "饮用水",
+          "system": "水系统",
+          "scene": "供旅客和机组饮用的清洁水。"
+        },
+        {
+          "id": 90,
+          "q": 90,
+          "en": "oxygen mask",
+          "zh": "氧气面罩",
+          "system": "客舱 / 应急",
+          "scene": "缺氧或失压时向人员供氧。"
+        },
+        {
+          "id": 32,
+          "q": 32,
+          "en": "emergency equipment",
+          "zh": "应急设备",
+          "system": "客舱 / 应急",
+          "scene": "灭火器、急救包、氧气设备等应急用品。"
+        },
+        {
+          "id": 40,
+          "q": 40,
+          "en": "emergency exit",
+          "zh": "应急出口",
+          "system": "客舱 / 结构",
+          "scene": "紧急撤离时使用的出口。"
+        },
+        {
+          "id": 67,
+          "q": 67,
+          "en": "escape slide",
+          "zh": "逃生滑梯",
+          "system": "应急撤离",
+          "scene": "从舱门充气展开，供人员快速撤离。"
+        },
+        {
+          "id": 5,
+          "q": 5,
+          "en": "ELT",
+          "zh": "应急定位发射器",
+          "system": "应急设备",
+          "scene": "Emergency Locator Transmitter，事故后发射定位信号。"
+        }
+      ]
+    },
+    {
+      "id": "g10",
+      "number": 10,
+      "title": "工具、机械件、损伤与地面操作",
+      "mainline": "按“地面操纵 → 刹车 → 机械件与作动 → 损伤与工具”理解工作现场。",
+      "pitfall": "torch 在英式英语中可指手电；dent 是凹坑，damaged 是损坏；steering 是地面转弯。",
+      "selfcheck": "区分 cam/bolt/actuator、dent/damaged、brake/antiskid。",
+      "terms": [
+        {
+          "id": 6,
+          "q": 6,
+          "en": "birdstrike",
+          "zh": "鸟击",
+          "system": "飞行安全",
+          "scene": "鸟与飞机相撞，可能损伤发动机、风挡或机翼。"
+        },
+        {
+          "id": 8,
+          "q": 8,
+          "en": "cam",
+          "zh": "凸轮",
+          "system": "机械件",
+          "scene": "把旋转运动转换为往复或特定规律的运动。"
+        },
+        {
+          "id": 27,
+          "q": 27,
+          "en": "bolt",
+          "zh": "螺栓",
+          "system": "标准件",
+          "scene": "与螺母配合使用的螺纹紧固件。"
+        },
+        {
+          "id": 37,
+          "q": 37,
+          "en": "brake",
+          "zh": "刹车",
+          "system": "机轮 / 起落架",
+          "scene": "使飞机减速或停住。"
+        },
+        {
+          "id": 22,
+          "q": 22,
+          "en": "antiskid",
+          "zh": "防滞",
+          "system": "刹车 / 起落架",
+          "scene": "防止机轮抱死，保持刹车和方向控制能力。"
+        },
+        {
+          "id": 52,
+          "q": 52,
+          "en": "actuator",
+          "zh": "作动器",
+          "system": "液压 / 机械",
+          "scene": "把液压、气压或电力转换为机械运动。"
+        },
+        {
+          "id": 38,
+          "q": 38,
+          "en": "dent",
+          "zh": "凹坑",
+          "system": "结构损伤",
+          "scene": "结构表面的局部凹陷，需要评估是否超标。"
+        },
+        {
+          "id": 91,
+          "q": 91,
+          "en": "damaged",
+          "zh": "损坏",
+          "system": "检查 / 损伤",
+          "scene": "部件已经受损，需要按标准评估和处理。"
+        },
+        {
+          "id": 99,
+          "q": 99,
+          "en": "torch",
+          "zh": "手电",
+          "system": "工具",
+          "scene": "英式英语中 torch 可表示手电筒。"
+        },
+        {
+          "id": 23,
+          "q": 23,
+          "en": "steering",
+          "zh": "转弯",
+          "system": "地面操纵 / 起落架",
+          "scene": "前轮或方向控制使飞机转向，不要只记成“方向盘”。"
+        }
+      ]
+    }
+  ]
+}
