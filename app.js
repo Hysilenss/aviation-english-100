@@ -20,12 +20,14 @@
     route: 'home',
     studyGroupId: null,
     studyIndex: 0,
-    studyRevealed: false,
+    studyAnswered: false,
+    studySelected: null,
     reviewTerms: [],
     reviewIndex: 0,
-    reviewRevealed: false,
-    reviewUnknown: 0,
-    reviewKnown: 0,
+    reviewAnswered: false,
+    reviewSelected: null,
+    reviewCorrect: 0,
+    reviewWrong: 0,
     quiz: null,
     quizIndex: 0,
     quizSelected: null,
@@ -226,7 +228,7 @@
         <span class="group-number">${String(group.number).padStart(2, '0')}</span>
         <span class="group-info">
           <h3>${escapeHtml(group.title)}</h3>
-          <p>${compact ? `已掌握 ${stats.mastered} / ${group.terms.length}` : `10 词 · 已掌握 ${stats.mastered} / ${group.terms.length}`}</p>
+          <p>${compact ? `已掌握 ${stats.mastered} / ${group.terms.length}` : `10 题 · 已掌握 ${stats.mastered} / ${group.terms.length}`}</p>
           <span class="progress-track" aria-label="学习包进度 ${stats.percent}%">
             <span class="progress-fill" style="width:${stats.percent}%"></span>
           </span>
@@ -246,21 +248,21 @@
 
   function renderHome() {
     const s = getSummary();
-    const primaryLabel = s.due > 0 ? `复习今日 ${s.due} 词` : '开始学习';
+    const primaryLabel = s.due > 0 ? `复习今日 ${s.due} 题` : '开始练习';
     app.innerHTML = `
       <section class="page" aria-labelledby="homeTitle">
         <header class="page-header">
           <div>
-            <p class="eyebrow">L1 EXAM · 100 WORDS</p>
+            <p class="eyebrow">L1 EXAM · 100 QUESTIONS</p>
             <h1 id="homeTitle">航空英语 100</h1>
-            <p class="page-subtitle">按主题学习，结合系统位置和场景理解。</p>
+            <p class="page-subtitle">直接作答考试原题选项，答错自动进入错词本。</p>
           </div>
         </header>
         <section class="hero-card" aria-label="总体学习进度">
           <div class="hero-top">
             <div class="hero-copy">
-              <h2>${s.mastered === ALL_TERMS.length ? '100 词已全部掌握' : '继续积累你的航空词汇'}</h2>
-              <p>${s.fresh > 0 ? `还有 ${s.fresh} 个新词等待学习。` : '所有词都已开始学习。'}</p>
+              <h2>${s.mastered === ALL_TERMS.length ? '100 题已全部掌握' : '继续完成航空英语选择题'}</h2>
+              <p>${s.fresh > 0 ? `还有 ${s.fresh} 道题等待练习。` : '所有题都已开始练习。'}</p>
             </div>
             <div class="progress-ring" style="--progress:${s.percent}">
               <div class="progress-ring-copy"><strong>${s.percent}%</strong><small>掌握进度</small></div>
@@ -274,7 +276,7 @@
           <button class="hero-action" type="button" data-action="smart-start">${primaryLabel}</button>
         </section>
         ${installCardMarkup()}
-        <div class="section-heading"><h2>主题学习包</h2><span>10 包 · 100 词</span></div>
+        <div class="section-heading"><h2>主题练习包</h2><span>10 包 · 100 题</span></div>
         <div class="group-list">${GROUPS.map((group) => groupCardMarkup(group)).join('')}</div>
         <div class="page-footer">
           <button class="small-button" type="button" data-action="export-data">导出学习记录</button>
@@ -285,38 +287,57 @@
 
   function renderStudyPicker() {
     const s = getSummary();
-    const reviewTitle = s.due > 0 ? `今日到期 ${s.due} 个词` : '今日没有到期词';
-    const reviewDesc = s.due > 0 ? '先复习到期词，完成后可以继续学习新的主题包。' : '可以随机抽取 10 个未掌握词进行巩固。';
+    const reviewTitle = s.due > 0 ? `今日到期 ${s.due} 道题` : '今日没有到期题';
+    const reviewDesc = s.due > 0 ? '先完成到期题，再继续新的主题练习。' : '可以随机抽取 10 道未掌握题进行巩固。';
     app.innerHTML = `
       <section class="page" aria-labelledby="studyTitle">
-        <header class="page-header"><div><p class="eyebrow">SMART REVIEW</p><h1 id="studyTitle">选择学习包</h1><p class="page-subtitle">每次学习 10 个同主题词汇，更容易建立系统联系。</p></div></header>
+        <header class="page-header"><div><p class="eyebrow">SMART REVIEW</p><h1 id="studyTitle">选择练习包</h1><p class="page-subtitle">直接用原题选项作答，不再先背释义。</p></div></header>
         <div class="info-card">
           <h3>${escapeHtml(reviewTitle)}</h3>
           <p>${escapeHtml(reviewDesc)}</p>
-          <div class="button-row" style="margin-top:14px"><button class="primary-button" type="button" data-action="start-review">${s.due > 0 ? '开始今日复习' : '随机复习 10 词'}</button></div>
+          <div class="button-row" style="margin-top:14px"><button class="primary-button" type="button" data-action="start-review">${s.due > 0 ? '开始今日复习' : '随机练习 10 题'}</button></div>
         </div>
-        <div class="section-heading"><h2>10 个主题包</h2><span>每包 10 词</span></div>
+        <div class="section-heading"><h2>10 个主题包</h2><span>每包 10 题</span></div>
         <div class="group-list">${GROUPS.map((group) => groupCardMarkup(group, true)).join('')}</div>
       </section>`;
   }
 
-  function studyCardMarkup(term, revealed) {
+  function questionCardMarkup(term, answered, selectedKey, actionPrefix) {
     const card = cardState(term.id);
+    const options = Object.entries(term.options || {});
+    const correctKey = term.answer;
+    const directionLabel = term.direction === 'zh2en' ? '中文 → 英文' : '英文 → 中文';
+    const isCorrect = answered && selectedKey === correctKey;
     return `
-      <article class="study-card" data-action="reveal-card" role="button" tabindex="0" aria-label="词汇卡片，点击显示答案">
+      <article class="quiz-card" aria-label="单选题">
         <div class="card-topline">
-          <span class="card-q">Q${String(term.q).padStart(3, '0')}</span>
+          <span class="card-q">Q${String(term.q).padStart(3, '0')} · ${directionLabel}</span>
           <span class="status-chip ${statusClass(card)}">${statusLabel(card)}</span>
         </div>
-        <h2 class="term-en">${escapeHtml(term.en)}</h2>
-        ${revealed ? `
-          <p class="term-zh">${escapeHtml(term.zh)}</p>
-          <div class="answer-block">
-            <dl>
-              <div class="info-row"><dt>系统 / 位置</dt><dd>${escapeHtml(term.system)}</dd></div>
-              <div class="info-row"><dt>场景理解</dt><dd>${escapeHtml(term.scene)}</dd></div>
-            </dl>
-          </div>` : `<p class="answer-hint">点击卡片查看中文、系统位置和场景</p>`}
+        <p class="quiz-kicker">单选题</p>
+        <h2 class="quiz-question">${escapeHtml(term.prompt || term.en)}</h2>
+        <p class="quiz-subtext">请选择正确选项</p>
+        <div class="options-list" role="group" aria-label="答案选项">
+          ${options.map(([key, text]) => {
+            let modifier = '';
+            if (answered) {
+              if (key === correctKey) modifier = ' correct';
+              else if (key === selectedKey) modifier = ' wrong';
+              else modifier = ' dimmed';
+            }
+            return `<button class="option-button${modifier}" type="button" data-action="${actionPrefix}-answer" data-key="${escapeHtml(key)}" ${answered ? 'disabled' : ''}>
+              <span class="option-letter">${escapeHtml(key)}</span>
+              <span class="option-text">${escapeHtml(text)}</span>
+            </button>`;
+          }).join('')}
+        </div>
+        ${answered ? `
+          <div class="feedback ${isCorrect ? 'good' : 'bad'}">
+            ${isCorrect ? '回答正确。' : `正确答案是：${escapeHtml(correctKey)}. ${escapeHtml(term.answerText || term.options[correctKey])}。`}
+            <br><strong>${escapeHtml(term.en)}</strong> · ${escapeHtml(term.zh)}
+            <br>${escapeHtml(term.system)}：${escapeHtml(term.scene)}
+          </div>
+          <button class="primary-button quiz-next" type="button" data-action="${actionPrefix}-next">下一题</button>` : ''}
       </article>`;
   }
 
@@ -330,25 +351,17 @@
     app.innerHTML = `
       <section class="page" aria-labelledby="groupStudyTitle">
         <header class="page-header">
-          <button class="back-button" type="button" data-route="study" aria-label="返回学习包列表">
+          <button class="back-button" type="button" data-route="study" aria-label="返回练习包列表">
             <svg viewBox="0 0 24 24"><path d="M20 11H7.8l5.6-5.6L12 4l-8 8 8 8 1.4-1.4L7.8 13H20z"/></svg>
           </button>
           <div style="flex:1;min-width:0">
-            <p class="eyebrow">学习包 ${group.number} / 10</p>
-            <h1 id="groupStudyTitle">${escapeHtml(group.title)}</h1>
-            <p class="study-meta"><span>${ui.studyIndex + 1} / ${group.terms.length}</span><span>已掌握 ${stats.mastered} / ${group.terms.length}</span></p>
+            <p class="eyebrow">主题练习 ${group.number} / 10</p>
+            <h1 id="groupStudyTitle" style="font-size:clamp(22px,6.2vw,28px)">${escapeHtml(group.title)}</h1>
+            <p class="study-meta"><span>第 ${ui.studyIndex + 1} 题 / ${group.terms.length}</span><span>已掌握 ${stats.mastered} / ${group.terms.length}</span></p>
           </div>
         </header>
         <div class="session-progress"><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div></div>
-        ${studyCardMarkup(term, ui.studyRevealed)}
-        <div class="study-actions">
-          ${ui.studyRevealed ? `
-            <div class="button-row">
-              <button class="secondary-button" type="button" data-action="study-unknown">不认识</button>
-              <button class="primary-button" type="button" data-action="study-known">认识</button>
-            </div>` : `<button class="primary-button" style="width:100%" type="button" data-action="reveal-card">显示答案</button>`}
-        </div>
-        <div class="info-card"><h3>本包主线</h3><p>${escapeHtml(group.mainline)}</p></div>
+        ${questionCardMarkup(term, ui.studyAnswered, ui.studySelected, 'study')}
       </section>`;
   }
 
@@ -386,9 +399,10 @@
     if (!pool.length) { showToast('所有词都已掌握，可以随时回来复习'); return; }
     ui.reviewTerms = shuffle(pool).slice(0, 20);
     ui.reviewIndex = 0;
-    ui.reviewRevealed = false;
-    ui.reviewUnknown = 0;
-    ui.reviewKnown = 0;
+    ui.reviewAnswered = false;
+    ui.reviewSelected = null;
+    ui.reviewCorrect = 0;
+    ui.reviewWrong = 0;
     if (!due.length) showToast('今天没有到期词，已随机抽取复习内容');
     go('review');
   }
@@ -399,7 +413,7 @@
         <section class="page">
           <header class="page-header"><div><p class="eyebrow">DAILY REVIEW</p><h1>今日复习</h1><p class="page-subtitle">按 1 / 3 / 7 / 14 天的间隔复习。</p></div></header>
           <div class="empty-state">
-            <div class="empty-icon">↻</div><h2>还没有生成复习队列</h2><p>点击下面的按钮，系统会优先抽取到期词。</p>
+            <div class="empty-icon">↻</div><h2>还没有生成复习队列</h2><p>点击下面的按钮，系统会优先抽取到期题。</p>
             <button class="primary-button" style="margin-top:16px" type="button" data-action="start-review">生成今日复习</button>
           </div>
         </section>`;
@@ -411,8 +425,8 @@
         <section class="page">
           <header class="page-header"><div><p class="eyebrow">DAILY REVIEW</p><h1>复习完成</h1></div></header>
           <div class="completion-card">
-            <div class="completion-mark">✓</div><h2>本轮完成 ${ui.reviewTerms.length} 个词</h2>
-            <p>认识 ${ui.reviewKnown} 个，不认识 ${ui.reviewUnknown} 个。</p>
+            <div class="completion-mark">✓</div><h2>本轮完成 ${ui.reviewTerms.length} 道题</h2>
+            <p>答对 ${ui.reviewCorrect} 题，答错 ${ui.reviewWrong} 题。</p>
             <div class="button-row" style="margin-top:18px">
               <button class="secondary-button" type="button" data-route="mistakes">查看错词</button>
               <button class="primary-button" type="button" data-route="home">回到首页</button>
@@ -431,34 +445,23 @@
           <button class="back-button" type="button" data-route="study" aria-label="结束复习">
             <svg viewBox="0 0 24 24"><path d="M20 11H7.8l5.6-5.6L12 4l-8 8 8 8 1.4-1.4L7.8 13H20z"/></svg>
           </button>
-          <div style="flex:1"><p class="eyebrow">DAILY REVIEW</p><h1>今日复习</h1><p class="study-meta"><span>${ui.reviewIndex + 1} / ${ui.reviewTerms.length}</span><span>优先到期词</span></p></div>
+          <div style="flex:1"><p class="eyebrow">DAILY REVIEW</p><h1>今日复习</h1><p class="study-meta"><span>第 ${ui.reviewIndex + 1} 题 / ${ui.reviewTerms.length}</span><span>优先到期题</span></p></div>
         </header>
         <div class="session-progress"><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div></div>
-        ${studyCardMarkup(term, ui.reviewRevealed)}
-        <div class="study-actions">
-          ${ui.reviewRevealed ? `
-            <div class="button-row">
-              <button class="secondary-button" type="button" data-action="review-unknown">不认识</button>
-              <button class="primary-button" type="button" data-action="review-known">认识</button>
-            </div>` : `<button class="primary-button" style="width:100%" type="button" data-action="reveal-card">显示答案</button>`}
-        </div>
+        ${questionCardMarkup(term, ui.reviewAnswered, ui.reviewSelected, 'review')}
       </section>`;
   }
 
-  function buildQuizItem(term, direction) {
-    const correctText = direction === 'en2zh' ? term.zh : term.en;
-    const distractors = shuffle(ALL_TERMS.filter((item) => item.id !== term.id))
-      .slice(0, 3)
-      .map((item) => direction === 'en2zh' ? item.zh : item.en);
-    const options = shuffle([
-      { text: correctText, correct: true },
-      ...distractors.map((text) => ({ text, correct: false })),
-    ]);
+  function buildQuizItem(term) {
     return {
       termId: term.id,
-      direction,
-      prompt: direction === 'en2zh' ? term.en : term.zh,
-      options,
+      direction: term.direction,
+      prompt: term.prompt || (term.direction === 'zh2en' ? term.zh : term.en),
+      options: Object.entries(term.options || {}).map(([key, text]) => ({
+        key,
+        text,
+        correct: key === term.answer,
+      })),
     };
   }
 
@@ -467,7 +470,7 @@
     if (pool.length < 4) pool = ALL_TERMS;
     const selected = shuffle(pool).slice(0, 10);
     ui.quiz = {
-      items: selected.map((term, index) => buildQuizItem(term, index % 2 === 0 ? 'en2zh' : 'zh2en')),
+      items: selected.map((term) => buildQuizItem(term)),
       index: 0,
       score: 0,
       answered: 0,
@@ -511,10 +514,10 @@
       const mistakeCount = mistakeTerms().length;
       app.innerHTML = `
         <section class="page">
-          <header class="page-header"><div><p class="eyebrow">MIXED QUIZ</p><h1>词汇测验</h1><p class="page-subtitle">英文选中文、中文选英文，每次 10 题。</p></div></header>
+          <header class="page-header"><div><p class="eyebrow">MIXED QUIZ</p><h1>原题测验</h1><p class="page-subtitle">使用考试原题选项，每次随机 10 题。</p></div></header>
           <div class="quiz-intro">
             <h2>准备开始</h2>
-            <p>题目会从 100 个词中随机抽取，答错会自动进入错词本。</p>
+            <p>题干和选项均来自题库，答错会自动进入错词本。</p>
             <div class="hero-stats" style="grid-template-columns:repeat(2,1fr);margin-top:16px">
               <div class="hero-stat" style="background:var(--surface-soft)"><strong style="color:var(--primary)">${total}</strong><span style="color:var(--muted)">累计答题</span></div>
               <div class="hero-stat" style="background:var(--surface-soft)"><strong style="color:var(--primary)">${rate}%</strong><span style="color:var(--muted)">总正确率</span></div>
@@ -609,7 +612,8 @@
       if (ui.studyGroupId !== route.groupId) {
         ui.studyGroupId = route.groupId;
         ui.studyIndex = 0;
-        ui.studyRevealed = false;
+        ui.studyAnswered = false;
+        ui.studySelected = null;
       }
       renderStudy();
       return;
@@ -631,7 +635,8 @@
     if (!group) return;
     const sameGroup = ui.studyGroupId === groupId;
     ui.studyGroupId = groupId;
-    ui.studyRevealed = false;
+    ui.studyAnswered = false;
+    ui.studySelected = null;
     if (termId !== null) {
       const index = group.terms.findIndex((term) => String(term.id) === String(termId));
       ui.studyIndex = index >= 0 ? index : 0;
@@ -683,50 +688,53 @@
       case 'start-review':
         startDueReview();
         break;
-      case 'reveal-card':
-        ui.studyRevealed = true;
-        ui.reviewRevealed = true;
-        render();
-        break;
-      case 'study-known': {
+      case 'study-answer': {
+        if (ui.studyAnswered) break;
         const group = GROUP_MAP.get(ui.studyGroupId);
-        recordReview(group.terms[ui.studyIndex].id, true);
-        ui.studyIndex += 1;
-        ui.studyRevealed = false;
+        const term = group.terms[ui.studyIndex];
+        const selectedKey = target.dataset.key;
+        ui.studyAnswered = true;
+        ui.studySelected = selectedKey;
+        recordReview(term.id, selectedKey === term.answer);
         render();
+        requestAnimationFrame(() => document.querySelector('.feedback')?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
         break;
       }
-      case 'study-unknown': {
-        const group = GROUP_MAP.get(ui.studyGroupId);
-        recordReview(group.terms[ui.studyIndex].id, false);
+      case 'study-next': {
         ui.studyIndex += 1;
-        ui.studyRevealed = false;
+        ui.studyAnswered = false;
+        ui.studySelected = null;
         render();
+        window.scrollTo({ top: 0, behavior: 'auto' });
         break;
       }
       case 'restart-group':
         ui.studyIndex = 0;
-        ui.studyRevealed = false;
+        ui.studyAnswered = false;
+        ui.studySelected = null;
         render();
         break;
-      case 'review-known': {
+      case 'review-answer': {
+        if (ui.reviewAnswered) break;
         const id = ui.reviewTerms[ui.reviewIndex];
-        recordReview(id, true);
-        ui.reviewKnown += 1;
-        ui.reviewIndex += 1;
-        ui.reviewRevealed = false;
+        const term = TERM_MAP.get(String(id));
+        const selectedKey = target.dataset.key;
+        const correct = selectedKey === term.answer;
+        ui.reviewAnswered = true;
+        ui.reviewSelected = selectedKey;
+        if (correct) ui.reviewCorrect += 1; else ui.reviewWrong += 1;
+        recordReview(id, correct);
         render();
+        requestAnimationFrame(() => document.querySelector('.feedback')?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
         break;
       }
-      case 'review-unknown': {
-        const id = ui.reviewTerms[ui.reviewIndex];
-        recordReview(id, false);
-        ui.reviewUnknown += 1;
+      case 'review-next':
         ui.reviewIndex += 1;
-        ui.reviewRevealed = false;
+        ui.reviewAnswered = false;
+        ui.reviewSelected = null;
         render();
+        window.scrollTo({ top: 0, behavior: 'auto' });
         break;
-      }
       case 'start-quiz':
         startQuiz(target.dataset.mode || 'all');
         break;
@@ -743,6 +751,7 @@
           ui.quizAnswered = false;
         }
         render();
+        window.scrollTo({ top: 0, behavior: 'auto' });
         break;
       case 'review-mistake': {
         const id = Number(target.dataset.term);

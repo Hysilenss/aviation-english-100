@@ -2,16 +2,22 @@
   "id": "./",
   "name": "航空英语 100",
   "short_name": "航空100",
-  "description": "航空英语 L1 100 词主题学习、词卡、测验和错词复习",
+  "description": "航空英语 L1 100 道原题选择题练习，支持错题本、间隔复习和离线使用",
   "lang": "zh-CN",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
   "orientation": "portrait-primary",
   "background_color": "#EEF4FA",
   "theme_color": "#17365D",
-  "categories": ["education", "productivity"],
+  "categories": [
+    "education",
+    "productivity"
+  ],
   "icons": [
     {
       "src": "./icon-192.png",

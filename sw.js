@@ -1,4 +1,4 @@
-const CACHE_NAME = 'aviation-english-100-v2';
+const CACHE_NAME = 'aviation-english-100-v3';
 const APP_SHELL = [
   './',
   './index.html',
