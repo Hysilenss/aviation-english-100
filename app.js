@@ -157,7 +157,7 @@
       card.streak += 1;
       const intervals = [1, 3, 7, 14, 30];
       card.nextReview = addDaysKey(intervals[Math.min(card.streak - 1, intervals.length - 1)]);
-      if (card.streak >= 3) {
+      if (card.streak >= 2) {
         card.status = 'mastered';
         delete state.mistakes[String(id)];
       } else {
