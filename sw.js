@@ -1,4 +1,4 @@
-const CACHE_NAME = 'aviation-english-100-v3';
+const CACHE_NAME = 'aviation-english-100-v4';
 const APP_SHELL = [
   './',
   './index.html',
@@ -62,4 +62,5 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+
 

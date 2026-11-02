@@ -15,6 +15,7 @@
   let state = loadState();
   let installPrompt = null;
   let toastTimer = 0;
+  let autoAdvanceTimer = null;
 
   const ui = {
     route: 'home',
@@ -42,7 +43,7 @@
   }[char]));
 
   function emptyState() {
-    return { version: 1, cards: {}, mistakes: {}, quiz: { total: 0, correct: 0 }, updatedAt: null };
+    return { version: 1, cards: {}, mistakes: {}, settings: { autoAdvance: true }, quiz: { total: 0, correct: 0 }, updatedAt: null };
   }
 
   function loadState() {
@@ -55,6 +56,7 @@
         ...parsed,
         cards: parsed.cards && typeof parsed.cards === 'object' ? parsed.cards : {},
         mistakes: parsed.mistakes && typeof parsed.mistakes === 'object' ? parsed.mistakes : {},
+        settings: { ...base.settings, ...(parsed.settings || {}) },
         quiz: { ...base.quiz, ...(parsed.quiz || {}) },
       };
     } catch {
@@ -217,6 +219,36 @@
     toastTimer = window.setTimeout(() => toastEl.classList.remove('show'), 2600);
   }
 
+  function clearAutoAdvance() {
+    if (autoAdvanceTimer) {
+      window.clearTimeout(autoAdvanceTimer);
+      autoAdvanceTimer = null;
+    }
+  }
+
+  function scheduleAutoAdvance(callback) {
+    clearAutoAdvance();
+    if (!state.settings?.autoAdvance) return;
+    autoAdvanceTimer = window.setTimeout(() => {
+      autoAdvanceTimer = null;
+      callback();
+    }, 900);
+  }
+
+  function autoAdvanceToggleMarkup() {
+    const enabled = Boolean(state.settings?.autoAdvance);
+    return `
+      <div class="toggle-row">
+        <div class="toggle-copy">
+          <strong>答对后自动下一题</strong>
+          <span>答错时停留查看正确答案</span>
+        </div>
+        <button class="switch ${enabled ? 'on' : ''}" type="button" role="switch" aria-checked="${enabled}" aria-label="答对后自动下一题" data-action="toggle-auto-advance">
+          <span class="switch-knob"></span>
+        </button>
+      </div>`;
+  }
+
   function isStandalone() {
     return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
   }
@@ -361,6 +393,7 @@
           </div>
         </header>
         <div class="session-progress"><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div></div>
+        ${autoAdvanceToggleMarkup()}
         ${questionCardMarkup(term, ui.studyAnswered, ui.studySelected, 'study')}
       </section>`;
   }
@@ -448,6 +481,7 @@
           <div style="flex:1"><p class="eyebrow">DAILY REVIEW</p><h1>今日复习</h1><p class="study-meta"><span>第 ${ui.reviewIndex + 1} 题 / ${ui.reviewTerms.length}</span><span>优先到期题</span></p></div>
         </header>
         <div class="session-progress"><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div></div>
+        ${autoAdvanceToggleMarkup()}
         ${questionCardMarkup(term, ui.reviewAnswered, ui.reviewSelected, 'review')}
       </section>`;
   }
@@ -518,6 +552,7 @@
           <div class="quiz-intro">
             <h2>准备开始</h2>
             <p>题干和选项均来自题库，答错会自动进入错词本。</p>
+            ${autoAdvanceToggleMarkup()}
             <div class="hero-stats" style="grid-template-columns:repeat(2,1fr);margin-top:16px">
               <div class="hero-stat" style="background:var(--surface-soft)"><strong style="color:var(--primary)">${total}</strong><span style="color:var(--muted)">累计答题</span></div>
               <div class="hero-stat" style="background:var(--surface-soft)"><strong style="color:var(--primary)">${rate}%</strong><span style="color:var(--muted)">总正确率</span></div>
@@ -547,6 +582,7 @@
           <p class="eyebrow">MIXED QUIZ · ${ui.quizIndex + 1} / ${ui.quiz.items.length}</p>
           <div class="session-progress"><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div></div>
         </header>
+        ${autoAdvanceToggleMarkup()}
         <div class="quiz-card">
           <p class="quiz-kicker">${item.direction === 'en2zh' ? '英文 → 中文' : '中文 → 英文'}</p>
           <h1 class="quiz-question">${escapeHtml(item.prompt)}</h1>
@@ -626,6 +662,7 @@
   }
 
   function handleRoute() {
+    clearAutoAdvance();
     render();
     window.scrollTo({ top: 0, behavior: 'auto' });
   }
@@ -658,8 +695,25 @@
     if (correct) ui.quiz.score += 1;
     state.quiz.total += 1;
     if (correct) state.quiz.correct += 1;
+    const answeredIndex = ui.quizIndex;
     recordReview(item.termId, correct);
     render();
+    requestAnimationFrame(() => document.querySelector('.feedback')?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+    if (correct) {
+      scheduleAutoAdvance(() => {
+        if (ui.route === 'quiz' && ui.quiz && ui.quizIndex === answeredIndex && ui.quizAnswered) {
+          if (ui.quizIndex + 1 >= ui.quiz.items.length) {
+            ui.quizFinished = true;
+          } else {
+            ui.quizIndex += 1;
+            ui.quizSelected = null;
+            ui.quizAnswered = false;
+          }
+          render();
+          window.scrollTo({ top: 0, behavior: 'auto' });
+        }
+      });
+    }
   }
 
   function exportData() {
@@ -694,13 +748,27 @@
         const term = group.terms[ui.studyIndex];
         const selectedKey = target.dataset.key;
         ui.studyAnswered = true;
+        const correct = selectedKey === term.answer;
+        const answeredIndex = ui.studyIndex;
         ui.studySelected = selectedKey;
-        recordReview(term.id, selectedKey === term.answer);
+        recordReview(term.id, correct);
         render();
         requestAnimationFrame(() => document.querySelector('.feedback')?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+        if (correct) {
+          scheduleAutoAdvance(() => {
+            if (ui.route === 'study' && ui.studyIndex === answeredIndex && ui.studyAnswered && ui.studySelected === selectedKey) {
+              ui.studyIndex += 1;
+              ui.studyAnswered = false;
+              ui.studySelected = null;
+              render();
+              window.scrollTo({ top: 0, behavior: 'auto' });
+            }
+          });
+        }
         break;
       }
       case 'study-next': {
+        clearAutoAdvance();
         ui.studyIndex += 1;
         ui.studyAnswered = false;
         ui.studySelected = null;
@@ -722,13 +790,26 @@
         const correct = selectedKey === term.answer;
         ui.reviewAnswered = true;
         ui.reviewSelected = selectedKey;
+        const answeredIndex = ui.reviewIndex;
         if (correct) ui.reviewCorrect += 1; else ui.reviewWrong += 1;
         recordReview(id, correct);
         render();
         requestAnimationFrame(() => document.querySelector('.feedback')?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+        if (correct) {
+          scheduleAutoAdvance(() => {
+            if (ui.route === 'review' && ui.reviewIndex === answeredIndex && ui.reviewAnswered && ui.reviewSelected === selectedKey) {
+              ui.reviewIndex += 1;
+              ui.reviewAnswered = false;
+              ui.reviewSelected = null;
+              render();
+              window.scrollTo({ top: 0, behavior: 'auto' });
+            }
+          });
+        }
         break;
       }
       case 'review-next':
+        clearAutoAdvance();
         ui.reviewIndex += 1;
         ui.reviewAnswered = false;
         ui.reviewSelected = null;
@@ -736,12 +817,20 @@
         window.scrollTo({ top: 0, behavior: 'auto' });
         break;
       case 'start-quiz':
+        clearAutoAdvance();
         startQuiz(target.dataset.mode || 'all');
+        break;
+      case 'toggle-auto-advance':
+        clearAutoAdvance();
+        state.settings.autoAdvance = !state.settings.autoAdvance;
+        saveState();
+        render();
         break;
       case 'answer-quiz':
         answerQuiz(Number(target.dataset.index));
         break;
       case 'next-quiz':
+        clearAutoAdvance();
         if (!ui.quiz) return;
         if (ui.quizIndex + 1 >= ui.quiz.items.length) {
           ui.quizFinished = true;
